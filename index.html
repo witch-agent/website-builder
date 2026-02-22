@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #050507;
+            --bg-secondary: #0a0a0e;
+            --text: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --text-muted: #505050;
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.2);
+            --border: #151518;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+        
+        header { text-align: center; margin-bottom: 3rem; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+        h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; margin-bottom: 0.5rem; }
+        h1 span { color: var(--accent); }
+        .subtitle { color: var(--text-secondary); max-width: 500px; margin: 0 auto; }
+
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+        .step { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
+        .step-num { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+        .step-title { font-weight: 600; margin-bottom: 0.5rem; }
+        .step-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+        .form-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; }
+        .form-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; margin-bottom: 1.5rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.875rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.95rem; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        
+        .color-options { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .color-btn { width: 40px; height: 40px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .color-btn:hover { transform: scale(1.1); }
+        .color-btn.selected { border-color: white; box-shadow: 0 0 0 2px var(--accent); }
+
+        .template-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .template-card { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .template-card:hover { border-color: var(--text-muted); }
+        .template-card.selected { border-color: var(--accent); background: var(--accent-glow); }
+        .template-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .template-name { font-weight: 600; margin-bottom: 0.25rem; }
+        .template-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .generate-btn { width: 100%; padding: 1.25rem; background: var(--accent); border: none; border-radius: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; transition: all 0.2s; }
+        .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+
+        .output-section { display: none; margin-top: 2rem; }
+        .output-section.show { display: block; }
+        .output-code { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
+        .output-code pre { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); white-space: pre-wrap; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+
+        @media (max-width: 768px) { .steps { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">&lt;/&gt; witch-agent</div>
+            <h1>Website <span>Builder</span></h1>
+            <p class="subtitle">Describe your dream website and get instant HTML code</p>
+        </header>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">01</div>
+                <div class="step-title">Describe</div>
+                <div class="step-desc">Tell us about your website idea</div>
+            </div>
+            <div class="step">
+                <div class="step-num">02</div>
+                <div class="step-title">Customize</div>
+                <div class="step-desc">Choose colors and style</div>
+            </div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <div class="step-title">Generate</div>
+                <div class="step-desc">Get ready-to-use HTML code</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-title">What's your website about?</div>
+            
+            <div class="form-group">
+                <label class="form-label">Website Name</label>
+                <input type="text" class="form-input" id="siteName" placeholder="e.g., My Portfolio">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea" id="siteDesc" placeholder="Describe your website, what it does, who it's for..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Template Style</label>
+                <div class="template-grid">
+                    <div class="template-card selected" data-template="portfolio">
+                        <div class="template-icon">💼</div>
+                        <div class="template-name">Portfolio</div>
+                        <div class="template-desc">Personal showcase</div>
+                    </div>
+                    <div class="template-card" data-template="landing">
+                        <div class="template-icon">🚀</div>
+                        <div class="template-name">Landing</div>
+                        <div class="template-desc">Product launch</div>
+                    </div>
+                    <div class="template-card" data-template="dashboard">
+                        <div class="template-icon">📊</div>
+                        <div class="template-name">Dashboard</div>
+                        <div class="template-desc">Admin panel</div>
+                    </div>
+                    <div class="template-card" data-template="blog">
+                        <div class="template-icon">✍️</div>
+                        <div class="template-name">Blog</div>
+                        <div class="template-desc">Content platform</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Accent Color</label>
+                <div class="color-options">
+                    <div class="color-btn selected" style="background: #8b5cf6" data-color="#8b5cf6"></div>
+                    <div class="color-btn" style="background: #10b981" data-color="#10b981"></div>
+                    <div class="color-btn" style="background: #f59e0b" data-color="#f59e0b"></div>
+                    <div class="color-btn" style="background: #ef4444" data-color="#ef4444"></div>
+                    <div class="color-btn" style="background: #06b6d4" data-color="#06b6d4"></div>
+                    <div class="color-btn" style="background: #ec4899" data-color="#ec4899"></div>
+                </div>
+            </div>
+
+            <button class="generate-btn" onclick="generate()">Generate Website</button>
+        </div>
+
+        <div class="output-section" id="output">
+            <div class="form-title">Your Website Code</div>
+            <div class="output-code">
+                <pre id="codeOutput"></pre>
+            </div>
+        </div>
+
+        <footer><p>Built by witch-agent | Generate with AI for best results</p></footer>
+    </div>
+
+    <script>
+        let selectedTemplate = 'portfolio';
+        let selectedColor = '#8b5cf6';
+
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedTemplate = card.dataset.template;
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedColor = btn.dataset.color;
+            });
+        });
+
+        function generate() {
+            const name = document.getElementById('siteName').value || 'My Website';
+            const desc = document.getElementById('siteDesc').value || 'A beautiful website';
+            
+            const templates = {
+                portfolio: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <style>
+        body { font-family: system-ui; background: #0a0a0a; color: #fff; margin: 0; padding: 2rem; }
+        .hero { text-align: center; padding: 4rem 0; }
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .tagline { color: ${selectedColor}; font-size: 1.25rem; }
+        .about { max-width: 600px; margin: 0 auto; line-height: 1.8; color: #888; }
+        .cta { display: inline-block; margin-top: 2rem; padding: 1rem 2rem; background: ${selectedColor}; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>${name}</h1>
+        <p class="tagline">${desc}</p>
+        <a href="#" class="cta">Get in Touch</a>
+    </div>
+    <div class="about">
+        <p>Welcome to ${name}. We specialize in creating beautiful digital experiences that help businesses grow.</p>
+    </div>
+</body>
+</html>`,
+                landing: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <style>
+        body { font-family: system-ui; background: #0a0a0a; color: #fff; margin: 0; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; background: linear-gradient(180deg, ${selectedColor}22, transparent); }
+        h1 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 1rem; }
+        p { color: #888; font-size: 1.2rem; max-width: 500px; margin-bottom: 2rem; }
+        .buttons { display: flex; gap: 1rem; }
+        .btn { padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .btn-primary { background: ${selectedColor}; color: #000; }
+        .btn-secondary { border: 1px solid #333; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>${name}</h1>
+        <p>${desc}</p>
+        <div class="buttons">
+            <a href="#" class="btn btn-primary">Get Started</a>
+            <a href="#" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+</body>
+</html>`,
+                dashboard: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui; background: #0a0a0a; color: #fff; display: flex; }
+        .sidebar { width: 240px; background: #111; padding: 1.5rem; border-right: 1px solid #222; }
+        .main { flex: 1; padding: 2rem; }
+        .logo { font-weight: 700; margin-bottom: 2rem; color: ${selectedColor}; }
+        .nav-item { padding: 0.75rem; color: #888; border-radius: 8px; margin-bottom: 0.5rem; }
+        .nav-item:hover, .nav-item.active { background: #222; color: #fff; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+        .stat-card { background: #111; padding: 1.5rem; border-radius: 12px; border: 1px solid #222; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: ${selectedColor}; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">${name}</div>
+        <div class="nav-item active">Dashboard</div>
+        <div class="nav-item">Analytics</div>
+        <div class="nav-item">Users</div>
+        <div class="nav-item">Settings</div>
+    </div>
+    <div class="main">
+        <h1>Dashboard</h1>
+        <div class="stats">
+            <div class="stat-card"><div class="stat-value">1,234</div><div style="color:#888">Users</div></div>
+            <div class="stat-card"><div class="stat-value">$24K</div><div style="color:#888">Revenue</div></div>
+            <div class="stat-card"><div class="stat-value">89%</div><div style="color:#888">Growth</div></div>
+        </div>
+    </div>
+</body>
+</html>`,
+                blog: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <style>
+        body { font-family: system-ui; background: #0a0a0a; color: #fff; margin: 0; }
+        header { padding: 2rem; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; }
+        nav a { color: #888; text-decoration: none; margin-left: 1.5rem; }
+        .hero { text-align: center; padding: 4rem 2rem; background: linear-gradient(180deg, ${selectedColor}11, transparent); }
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .posts { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
+        .post { border-bottom: 1px solid #222; padding: 2rem 0; }
+        .post h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .post p { color: #888; line-height: 1.8; }
+        .tag { color: ${selectedColor}; font-size: 0.8rem; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">${name}</div>
+        <nav><a href="#">Home</a><a href="#">About</a><a href="#">Contact</a></nav>
+    </header>
+    <div class="hero">
+        <h1>${name}</h1>
+        <p>${desc}</p>
+    </div>
+    <div class="posts">
+        <article class="post">
+            <span class="tag">Featured</span>
+            <h2>Welcome to Our Blog</h2>
+            <p>We're excited to share our journey and insights with you...</p>
+        </article>
+        <article class="post">
+            <span class="tag">Update</span>
+            <h2>Latest News</h2>
+            <p>Check out what we've been working on...</p>
+        </article>
+    </div>
+</body>
+</html>`
+            };
+
+            document.getElementById('codeOutput').textContent = templates[selectedTemplate];
+            document.getElementById('output').classList.add('show');
+        }
+    </script>
+</body>
+</html>
